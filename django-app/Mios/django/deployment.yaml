@@ -1,0 +1,54 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: django
+    labels:
+        app: django
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            pod: django-container
+    template:
+        metadata:
+            labels:
+        spec:
+            containers:
+            - name: django
+              image: gitumarkk/k8_django_minikube:part_3
+              ports:
+                - containerPort: 8000
+              env:
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                        name: postgres-credentials
+                        key: user
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                        name: postgres-credentials
+                        key: password
+                
+                - name: POSTGRES_HOST
+                  value: postgres-service
+              
+              volumeMounts:
+                - name: postgres-volume-volumeMounts
+                  mountPath: /var/lib/busybox
+            
+            volumes:
+                - name: postgres-volume-mount
+                  persistentVolumeClaim:
+                    claimName: postgres-pvc
+                    
+                    
+ 
+
+#Setting the database credentials as environmental variables which will be
+#passed into the settings file. The POSTGRES_USER and POSTGRES_PASSWORD variables are 
+#extracted from the Secret object that was created earlier
+
+#The POSTGRES_HOST variable takes on the value of the Postgres service that we cre
+#As was explained, Kubernetes is clever enough to map the postgres service name to the actual pod IP.

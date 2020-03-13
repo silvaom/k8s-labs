@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: kubernetes-django-Service
+spec:
+    selector:
+      pod: django
+    ports: 
+    - protocol: TCP
+      port: 8000
+      targetPort: 6000
+    type: NodePort
+#The spec: selector field specifies the <pod_label> and <pod_value> 
+#that the service applies to.
+#This means that any pod matching <pod_key>=<pod_value> 
+#label will be exposed by the service
+
+#targetPort is the port within the pod that will be exposed
